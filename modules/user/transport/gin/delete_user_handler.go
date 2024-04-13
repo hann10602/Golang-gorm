@@ -11,7 +11,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func GetUser(db *gorm.DB) func(*gin.Context) {
+func DeleteUser(db *gorm.DB) func(*gin.Context) {
 	return func(c *gin.Context) {
 		id, err := strconv.Atoi(c.Param("id"))
 
@@ -22,16 +22,14 @@ func GetUser(db *gorm.DB) func(*gin.Context) {
 		}
 
 		store := storage.NewSQLStore(db)
-		business := biz.NewGetUserBiz(store)
+		business := biz.NewDeleteUserBiz(store)
 
-		data, err := business.GetUserById(c.Request.Context(), id)
-
-		if err != nil {
+		if err := business.DeleteUser(c.Request.Context(), id); err != nil {
 			c.JSON(http.StatusBadRequest, err)
 
 			return
 		}
 
-		c.JSON(http.StatusOK, common.SimpleSuccessResponse(data))
+		c.JSON(http.StatusOK, common.SimpleSuccessResponse(true))
 	}
 }

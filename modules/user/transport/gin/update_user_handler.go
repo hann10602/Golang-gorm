@@ -6,14 +6,22 @@ import (
 	"gin_mysql/modules/user/model"
 	"gin_mysql/modules/user/storage"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
 
-func CreateUser(db *gorm.DB) func(*gin.Context) {
+func UpdateUser(db *gorm.DB) func(*gin.Context) {
 	return func(c *gin.Context) {
-		var data model.CreateUserDTO
+		var data model.UpdateUserDTO
+		id, err := strconv.Atoi(c.Param("id"))
+
+		if err != nil {
+			c.JSON(http.StatusBadRequest, common.ErrInvalidRequest(err))
+
+			return
+		}
 
 		if err := c.ShouldBind(&data); err != nil {
 			c.JSON(http.StatusBadRequest, common.ErrInvalidRequest(err))
@@ -22,9 +30,9 @@ func CreateUser(db *gorm.DB) func(*gin.Context) {
 		}
 
 		store := storage.NewSQLStore(db)
-		business := biz.NewCreateUserBiz(store)
+		business := biz.NewUpdateUserBiz(store)
 
-		if err := business.CreateNewUser(c.Request.Context(), &data); err != nil {
+		if err := business.UpdateUserById(c.Request.Context(), id, &data); err != nil {
 			c.JSON(http.StatusBadRequest, err)
 
 			return

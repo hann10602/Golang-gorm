@@ -6,9 +6,14 @@ import (
 	"time"
 )
 
+const (
+	EntityName = "User"
+)
+
 var (
 	ErrUsernameIsBlank = errors.New("Username cannot be blank")
 	ErrPasswordIsBlank = errors.New("Password cannot be blank")
+	ErrUserIsDeleted   = errors.New("User is deleted")
 )
 
 type Users struct {

@@ -2,6 +2,7 @@ package biz
 
 import (
 	"context"
+	"gin_mysql/common"
 	"gin_mysql/modules/user/model"
 	"strings"
 )
@@ -31,7 +32,7 @@ func (biz *createUserBiz) CreateNewUser(ctx context.Context, data *model.CreateU
 	}
 
 	if err := biz.store.CreateUser(ctx, data); err != nil {
-		return err
+		return common.ErrCannotCreateEntity(model.EntityName, err)
 	}
 
 	return nil

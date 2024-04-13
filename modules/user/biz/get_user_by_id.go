@@ -2,11 +2,12 @@ package biz
 
 import (
 	"context"
+	"gin_mysql/common"
 	"gin_mysql/modules/user/model"
 )
 
 type GetUserStorage interface {
-	GetUser(ctx context.Context, conds map[string]interface{}) (data *model.Users, err error)
+	GetUser(ctx context.Context, conds map[string]interface{}) (*model.Users, error)
 }
 
 type getUserBiz struct {
@@ -21,7 +22,7 @@ func (biz *getUserBiz) GetUserById(ctx context.Context, id int) (*model.Users, e
 	data, err := biz.store.GetUser(ctx, map[string]interface{}{"id": id})
 
 	if err != nil {
-		return nil, err
+		return nil, common.ErrCannotGetEntity(model.EntityName, err)
 	}
 
 	return data, nil
